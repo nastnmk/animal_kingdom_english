@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Интерактивный словарь Animal Kingdom: 200 слов с озвучкой, переводом и идиомами">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Animal Kingdom Vocabulary</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Charis+SIL:ital@0;1&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+/* Layout: a squared exercise-book page; English in ink, Russian in blue biro, notes and idioms in red pen — like Stacy's own notes. */
+:root{
+  --paper:#f4f6f3; --grid:#dbe3e8; --card:#ffffff; --ink:#1c2230; --muted:#5a6373;
+  --line:#cbd4db; --pen:#2343a6; --pen-soft:#e6ebfa; --red:#bf3329; --red-soft:#fbe9e7;
+  --ok:#1f7a4d; --ok-soft:#e3f3ea; --shadow:0 1px 0 rgba(28,34,48,.06),0 6px 18px -10px rgba(28,34,48,.25);
+  --f-word:"Fraunces",Georgia,"Times New Roman",serif;
+  --f-hand:"Caveat","Segoe Print","Comic Sans MS",cursive;
+  --f-ipa:"Charis SIL","Doulos SIL","Gentium Plus","Lucida Sans Unicode",serif;
+  --f-ui:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#12161d; --grid:#1d242e; --card:#1a2029; --ink:#e7ebf1; --muted:#9aa4b3;
+  --line:#2b3441; --pen:#93b2ff; --pen-soft:#1f2a45; --red:#ff7d70; --red-soft:#3a1f1d;
+  --ok:#5fd39a; --ok-soft:#183126; --shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px -12px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#12161d; --grid:#1d242e; --card:#1a2029; --ink:#e7ebf1; --muted:#9aa4b3;
+  --line:#2b3441; --pen:#93b2ff; --pen-soft:#1f2a45; --red:#ff7d70; --red-soft:#3a1f1d;
+  --ok:#5fd39a; --ok-soft:#183126; --shadow:0 1px 0 rgba(0,0,0,.3),0 8px 20px -12px rgba(0,0,0,.7); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background-color:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--pen);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-direction:column;gap:10px;padding-block:14px 12px}
+.row1{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--f-word);font-weight:700;font-size:clamp(24px,4vw,34px);line-height:1.05;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 .hand{font-family:var(--f-hand);font-weight:700;color:var(--pen);font-size:.8em;letter-spacing:0;margin-left:.3em;white-space:nowrap}
+.progress{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{width:120px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .4s}
+.modes{display:flex;gap:4px;flex-wrap:wrap}
+.modes button{border:1px solid var(--line);background:var(--card);padding:7px 14px;border-radius:3px;font-weight:500;font-size:14px}
+.modes button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{flex:1 1 220px;min-width:0;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:3px;padding:0 10px}
+.search input{border:0;outline:0;background:transparent;font:inherit;color:var(--ink);padding:8px 0;width:100%;min-width:0}
+.toggles{display:flex;gap:6px;flex-wrap:wrap}
+.tg{border:1px solid var(--line);background:var(--card);border-radius:3px;padding:7px 10px;font-size:13px;color:var(--muted)}
+.tg[aria-pressed="true"]{color:var(--pen);border-color:var(--pen);background:var(--pen-soft)}
+.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.cats button{flex:0 0 auto;border:1px dashed var(--line);background:transparent;padding:5px 11px;border-radius:999px;font-size:13px;color:var(--muted);white-space:nowrap}
+.cats button[aria-pressed="true"]{border-style:solid;border-color:var(--pen);color:var(--pen);background:var(--pen-soft);font-weight:500}
+.cats button b{font-weight:500;opacity:.6;margin-left:4px;font-variant-numeric:tabular-nums}
+
+main.wrap{padding-block:22px 64px}
+.section-h{display:flex;align-items:baseline;gap:4px 12px;margin:26px 0 12px;flex-wrap:wrap}
+.section-h:first-child{margin-top:0}
+.section-h h2{font-family:var(--f-word);font-weight:700;font-size:22px;margin:0}
+.section-h span{font-family:var(--f-hand);color:var(--pen);font-size:22px;line-height:1}
+.section-h small{margin-left:auto;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+
+/* word grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px}
+.w{position:relative;display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:4px;padding:12px 12px 10px;box-shadow:var(--shadow);min-width:0;transition:transform .15s,border-color .15s}
+.w:hover{transform:translateY(-2px);border-color:var(--pen)}
+.w .em{font-size:34px;line-height:1.1;margin-bottom:4px}
+.w .en{font-family:var(--f-word);font-weight:700;font-size:18px;line-height:1.15;overflow-wrap:anywhere}
+.w .ipa{font-family:var(--f-ipa);font-size:13px;color:var(--muted)}
+.w .ru{font-family:var(--f-hand);font-size:21px;line-height:1.05;color:var(--pen);margin-top:4px;overflow-wrap:break-word;hyphens:auto}
+body.hide-ru .w .ru{filter:blur(6px);opacity:.6}
+body.hide-ru .w:hover .ru,body.hide-ru .w:focus-visible .ru{filter:none;opacity:1}
+.w .flag{position:absolute;top:10px;right:42px;font-family:var(--f-hand);font-size:16px;color:var(--red)}
+.w.known{background:linear-gradient(var(--ok-soft),var(--ok-soft)) padding-box}
+.w.known::after{content:"✓";position:absolute;bottom:8px;right:10px;color:var(--ok);font-weight:600}
+.spk{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;color:var(--pen)}
+.spk:hover{background:var(--pen-soft)}
+.spk svg{width:15px;height:15px}
+.spk.playing{animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+.empty{padding:40px 0;color:var(--muted);text-align:center}
+
+/* detail sheet */
+.scrim{position:fixed;inset:0;background:rgba(10,14,20,.45);z-index:20;display:flex;align-items:center;justify-content:center;padding:16px}
+.sheet{background:var(--card);color:var(--ink);width:min(560px,100%);max-height:calc(100% - 16px);overflow:auto;border-radius:6px;box-shadow:0 20px 60px -20px rgba(0,0,0,.5);position:relative}
+.sheet-in{padding:22px 22px 18px;display:flex;flex-direction:column;gap:14px}
+.sheet .x{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:18px;line-height:1}
+.hero{display:flex;gap:16px;align-items:center}
+.hero .em{font-size:64px;line-height:1}
+.hero .en{font-family:var(--f-word);font-weight:700;font-size:clamp(28px,6vw,38px);line-height:1.05;overflow-wrap:anywhere}
+.hero .ipa{font-family:var(--f-ipa);font-size:17px;color:var(--muted)}
+.hero .ru{font-family:var(--f-hand);font-size:32px;color:var(--pen);line-height:1}
+.say{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:3px;padding:8px 12px;display:inline-flex;gap:8px;align-items:center;font-weight:500;font-size:14px}
+.btn svg{width:16px;height:16px;color:var(--pen)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.primary svg{color:var(--paper)}
+.btn.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.block h3{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ex{display:flex;gap:8px;align-items:flex-start;font-family:var(--f-word);font-size:17px;font-style:italic;line-height:1.4}
+.mini{flex:0 0 auto;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;color:var(--pen);margin-top:1px}
+.mini svg{width:13px;height:13px}
+.idioms{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.idioms li{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--red-soft);border-radius:3px;border-left:2px solid var(--red)}
+.idioms .t{min-width:0}
+.idioms .t b{display:block;font-family:var(--f-word);font-weight:700;font-size:16px;line-height:1.25}
+.idioms .t span{font-family:var(--f-hand);font-size:20px;color:var(--red);line-height:1.1}
+.note{font-family:var(--f-hand);font-size:21px;color:var(--red);line-height:1.15}
+.nav{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;padding-top:4px}
+
+/* flashcards */
+.fc-wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.fc-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.card3d{perspective:1200px;cursor:pointer;min-height:340px}
+.card3d .inner{position:relative;width:100%;min-height:340px;transition:transform .55s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.card3d.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;overflow:auto}
+.face.back{transform:rotateY(180deg)}
+.face .em{font-size:72px;line-height:1}
+.face .en{font-family:var(--f-word);font-weight:700;font-size:clamp(28px,7vw,40px);line-height:1.1;overflow-wrap:anywhere}
+.face .ipa{font-family:var(--f-ipa);color:var(--muted);font-size:17px}
+.face .ru{font-family:var(--f-hand);color:var(--pen);font-size:clamp(30px,7vw,42px);line-height:1.05}
+.face .hint{position:absolute;bottom:12px;left:0;right:0;font-size:12px;color:var(--muted)}
+.face .ex{font-size:15px;justify-content:center;color:var(--muted)}
+.fc-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fc-actions .btn{justify-content:center;padding:12px}
+.btn.again{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+@media (prefers-reduced-motion:reduce){.card3d .inner{transition:none}.w{transition:none}.spk.playing{animation:none}}
+
+/* quiz */
+.qz{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.qz-q{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:24px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.qz-q .em{font-size:56px;line-height:1}
+.qz-q .big{font-family:var(--f-word);font-weight:700;font-size:clamp(26px,6vw,36px);line-height:1.1}
+.qz-q .ruq{font-family:var(--f-hand);color:var(--pen);font-size:clamp(30px,7vw,40px);line-height:1}
+.qz-q .ask{font-size:13px;color:var(--muted)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{border:1px solid var(--line);background:var(--card);border-radius:4px;padding:14px 12px;text-align:left;min-height:56px;display:flex;align-items:center;gap:8px}
+.opt .k{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 5px;flex:0 0 auto}
+.opt.ru-o{font-family:var(--f-hand);font-size:23px;color:var(--pen);line-height:1.05}
+.opt.en-o{font-family:var(--f-word);font-weight:700;font-size:17px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--red-soft);border-color:var(--red)}
+.opt:disabled{cursor:default}
+.qz-fb{min-height:24px;font-size:14px;color:var(--muted);text-align:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:transparent;padding:6px 10px;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--pen-soft);color:var(--pen);font-weight:500}
+
+/* diagrams */
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.dg figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:16px;min-width:0}
+.dg figcaption{font-family:var(--f-word);font-weight:700;font-size:20px;display:flex;align-items:baseline;gap:10px}
+.dg figcaption span{font-family:var(--f-hand);color:var(--pen);font-weight:500;font-size:22px}
+.dg svg{width:100%;height:auto;display:block}
+.dg .lab{cursor:pointer}
+.dg .lab text{font-family:var(--f-word);font-weight:700;font-size:17px;fill:var(--ink)}
+.dg .lab .r{font-family:var(--f-hand);font-weight:500;font-size:20px;fill:var(--pen)}
+.dg .lab line{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+.dg .lab rect{fill:transparent}
+.dg .lab:hover text:first-of-type,.dg .lab:focus text:first-of-type{fill:var(--red)}
+.dg .lab:focus{outline:none}
+.dg .lab:focus rect{stroke:var(--pen);stroke-width:1.5}
+.dg p{color:var(--muted);font-size:13px;margin:6px 0 0}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:3px;font-size:13px;z-index:30;max-width:calc(100% - 32px)}
+
+@media (max-width:560px){
+  header.top{position:static}
+  .section-h h2{font-size:20px}
+  .section-h small{flex-basis:100%;margin-left:0}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .w{padding:10px}
+  .w .em{font-size:28px}
+  .w .en{font-size:16px}
+  .opts{grid-template-columns:1fr}
+  .scrim{align-items:flex-end;padding:0}
+  .sheet{width:100%;border-radius:10px 10px 0 0;max-height:88%;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .bar{width:80px}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="row1">
+      <h1>The Animal Kingdom <span class="hand">мой словарик</span></h1>
+      <div class="progress" aria-live="polite"><span id="progTxt">выучено 0</span><div class="bar"><i id="progBar"></i></div></div>
+    </div>
+    <div class="row2">
+      <div class="modes" role="tablist" aria-label="Режим">
+        <button role="tab" data-mode="list" aria-selected="true" id="m-list">Словарь</button>
+        <button role="tab" data-mode="cards" aria-selected="false" id="m-cards">Карточки</button>
+        <button role="tab" data-mode="quiz" aria-selected="false" id="m-quiz">Тест</button>
+        <button role="tab" data-mode="diagram" aria-selected="false" id="m-diagram">Схемы</button>
+      </div>
+      <label class="search" for="q"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Найти слово: hoof или копыто" autocomplete="off"></label>
+      <div class="toggles">
+        <button class="tg" id="tgHide" aria-pressed="false" title="Размыть перевод, чтобы проверить себя">Скрыть перевод</button>
+        <button class="tg" id="tgSlow" aria-pressed="false" title="Произносить медленнее">Медленно</button>
+      </div>
+    </div>
+    <nav class="cats" id="cats" aria-label="Темы"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+<div id="sheetHost"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const ICON_SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const ICON_SLOW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M16 12h5"/></svg>';
+
+const CATS=[
+ ['kinds','Виды животных','Unit 32 A'],
+ ['behaviour','Характер животных','Unit 32 B'],
+ ['life','Где и как живут','Unit 32 C'],
+ ['people','Человек и животные','Unit 32 D · Animal issues'],
+ ['body','Части тела','Animal parts · заметки'],
+ ['young','Детёныши, дома, звуки','Vocabulary bank'],
+ ['animals','Звери, птицы, насекомые','Flora and fauna · 14.10'],
+ ['groups','Как называют стаю','заметки 14.10'],
+ ['nature','Природа и явления','заметки 14.10'],
+ ['plant','Строение растения','Flora · схема'],
+ ['trees','Деревья и кусты','1.1 E · заметки'],
+ ['garden','Цветы, фрукты, овощи','1.1 B, C, F'],
+ ['phrases','Устойчивые выражения','1.3 · поговорки']
+];
+
+/* [english, ipa, russian, emoji, example, idioms ("en = ru"), note, text-to-speak] */
+const RAW={
+kinds:[
+ ['mammal','ˈmæm.əl','млекопитающее','🐄','A whale isn\'t a fish — it\'s a mammal.'],
+ ['marsupial','mɑːˈsuː.pi.əl','сумчатое животное','🦘','A kangaroo is a marsupial: its young grow in a pouch.'],
+ ['pouch','paʊtʃ','сумка (у кенгуру)','👝','The baby kangaroo lives in its mother\'s pouch.'],
+ ['rodent','ˈrəʊ.dənt','грызун','🐭','Mice, rats and squirrels are all rodents.',['smell a rat = почуять неладное']],
+ ['reptile','ˈrep.taɪl','рептилия, пресмыкающееся','🦎','Snakes, lizards and crocodiles are reptiles.'],
+ ['carnivore','ˈkɑː.nɪ.vɔː','плотоядное животное','🦁','Lions and tigers are carnivores.',[],'прилагательное: carnivorous /kɑːˈnɪv.ər.əs/'],
+ ['herbivore','ˈhɜː.bɪ.vɔː','травоядное животное','🦌','Deer and cows are herbivores.',[],'прилагательное: herbivorous /hɜːˈbɪv.ər.əs/'],
+ ['predator','ˈpred.ə.tə','хищник (охотится на других)','🦈','Sharks are the top predators of the sea.',['apex predator = хищник на вершине пищевой цепи'],'прилагательное: predatory /ˈpred.ə.tər.i/. Глагола «predate» в этом смысле нет — говорят prey on'],
+ ['prey','preɪ','добыча, жертва; охотиться (prey on)','🐇','Owls prey on mice.',['fall prey to = стать жертвой чего-то','bird of prey = хищная птица','easy prey = лёгкая добыча']],
+ ['scavenger','ˈskæv.ɪn.dʒə','падальщик','🦅','Hyenas are scavengers — they eat animals killed by others.',[],'глагол: scavenge — рыться в поисках еды'],
+ ['warm-blooded','ˌwɔːmˈblʌd.ɪd','теплокровный','🌡️','Mammals are warm-blooded: their temperature stays the same.'],
+ ['cold-blooded','ˌkəʊldˈblʌd.ɪd','холоднокровный','🐍','Reptiles are cold-blooded, so they lie in the sun to get warm.',['cold-blooded murder = хладнокровное убийство']]
+],
+behaviour:[
+ ['docile','ˈdəʊ.saɪl','смирный, покорный','🐑','Sheep are generally rather docile animals.'],
+ ['tame','teɪm','ручной, приручённый','🦜','These birds are so tame they will sit on your hand.',['to tame = приручать','a tame ending = пресный, скучный финал']],
+ ['domesticated','dəˈmes.tɪ.keɪ.tɪd','одомашненный','🐕','Dogs and horses were domesticated thousands of years ago.',[],'domestication (сущ.) → domesticate (гл.) → domesticated (прил.)'],
+ ['wild','waɪld','дикий','🐺','There are wild cats in the mountains.',['in the wild = в дикой природе','run wild = отбиться от рук','a wild goose chase = погоня за несбыточным']],
+ ['savage','ˈsæv.ɪdʒ','свирепый, жестокий','🐗','A savage wolf killed three of the farmer\'s sheep.',['savage criticism = беспощадная критика']],
+ ['fierce','fɪəs','свирепый, агрессивный','🐯','A fierce dog guarded the gates.',['fierce competition = жёсткая конкуренция']]
+],
+life:[
+ ['natural habitat','ˌnætʃ.ər.əl ˈhæb.ɪ.tæt','естественная среда обитания','🌿','The natural habitat of many species is shrinking.'],
+ ['migrate','maɪˈɡreɪt','мигрировать, перелетать','🕊️','The Arctic tern migrates from the Arctic to the Antarctic.'],
+ ['migration','maɪˈɡreɪ.ʃən','миграция, перелёт','🦢','Migration is when animals travel long distances to a different habitat.',['migratory birds = перелётные птицы'],'прилагательное: migratory /ˈmaɪ.ɡrə.tər.i/'],
+ ['dodo','ˈdəʊ.dəʊ','дронт, додо; устаревший человек','🦤','The dodo was a large flightless bird.',['as dead as a dodo = давно устарело, мертво','go the way of the dodo = исчезнуть навсегда'],'a dodo = человек или вещь, отставшие от жизни'],
+ ['become extinct','bɪˌkʌm ɪkˈstɪŋkt','вымереть','🦖','The dodo became extinct in the 17th century.',['on the verge of extinction = на грани вымирания'],'сущ.: extinction'],
+ ['game reserve','ˈɡeɪm rɪˌzɜːv','заповедник, сафари-парк','🦓','You can see lots of animals in the big game reserves in Africa.',[],'то же самое: game park'],
+ ['game','ɡeɪm','дичь (животные для охоты)','🦆','Game can mean animals or birds that are hunted.',['big game = крупная дичь (львы, слоны)','fair game = законная мишень (для критики)']],
+ ['gamekeeper','ˈɡeɪmˌkiː.pə','егерь','🥾','The gamekeeper protects the animals on the estate.',['poacher turned gamekeeper = бывший нарушитель, ставший защитником']],
+ ['bird sanctuary','ˈbɜːd ˌsæŋk.tʃu.ər.i','птичий заповедник','🐦','There is a bird sanctuary near here.'],
+ ['animal shelter','ˈæn.ɪ.məl ˌʃel.tə','приют для животных','🏠','We went to the animal rescue shelter to get a dog.',[],'полностью: animal rescue shelter'],
+ ['stray','streɪ','бездомный, бродячий (о животном)','🐈','Shelters give food and a home to stray cats and dogs.',['a stray bullet = шальная пуля','stray from the point = отклоняться от темы']],
+ ['endangered species','ɪnˌdeɪn.dʒəd ˈspiː.ʃiːz','вымирающий вид','🐼','The snow leopard is an endangered species.'],
+ ['bred in captivity','ˌbred ɪn kæpˈtɪv.ə.ti','разводимые в неволе','🦒','These birds were bred in captivity and then released into the wild.']
+],
+people:[
+ ['blood sports','ˈblʌd spɔːts','кровавый спорт (охота ради забавы)','🦊','Many people are opposed to blood sports such as fox-hunting and bullfighting.'],
+ ['the fur trade','ðə ˈfɜː treɪd','торговля мехом','🧥','Some people refuse to wear fur because they are against the fur trade.'],
+ ['poacher','ˈpəʊ.tʃə','браконьер','🪤','Poachers kill hundreds of elephants every year.',['Poachers make the best gamekeepers = лучший сторож — бывший вор'],'глагол: poach — браконьерствовать; ещё «переманить сотрудника» и «варить пашот»'],
+ ['the ivory trade','ði ˈaɪ.vər.i treɪd','торговля слоновой костью','🐘','Poachers supply the ivory trade with elephants\' tusks.'],
+ ['animal rights activist','ˌæn.ɪ.məl ˈraɪts ˌæk.tɪ.vɪst','зоозащитник','📢','Animal rights activists often demonstrate outside research laboratories.'],
+ ['horn','hɔːn','рог','🦏','Rhinos are hunted for their horn.',['take the bull by the horns = взять быка за рога','lock horns with = сцепиться, вступить в спор']],
+ ['cruelty','ˈkruː.əl.ti','жестокость','💔','Activists campaign against cruelty to animals.',['be treated cruelly = подвергаться жестокому обращению']],
+ ['hunted for sport','ˌhʌn.tɪd fə ˈspɔːt','на них охотятся ради развлечения','🏹','In some countries foxes are still hunted for sport.'],
+ ['inhumane conditions','ˌɪn.hjuːˈmeɪn kənˈdɪʃ.ənz','бесчеловечные условия','⛓️','Some animals are kept in inhumane conditions.'],
+ ['animal charity','ˌæn.ɪ.məl ˈtʃær.ə.ti','благотворительная организация для животных','🤝','She volunteers for an animal charity at weekends.']
+],
+body:[
+ ['tusk','tʌsk','бивень','🐘','Elephants are killed for their ivory tusks.'],
+ ['fang','fæŋ','клык (змеи, хищника)','🐍','The snake bit him with its poisonous fangs.'],
+ ['antlers','ˈænt.ləz','ветвистые рога (оленя)','🦌','A male deer grows new antlers every year.'],
+ ['mane','meɪn','грива','🦁','The lion shook its huge mane.'],
+ ['hoof · hooves','huːf · huːvz','копыто · копыта','🐎','You could hear the horse\'s hooves on the road.',['on the hoof = на ходу, без подготовки'],'','hoof. hooves'],
+ ['shell','ʃel','панцирь, раковина','🐢','The tortoise hid its head inside its shell.',['come out of your shell = перестать стесняться']],
+ ['stripes','straɪps','полосы','🦓','No two zebras have the same stripes.',['earn your stripes = заслужить признание опытом']],
+ ['spots','spɒts','пятна','🐆','A leopard has spots, a tiger has stripes.',['A leopard cannot change its spots = горбатого могила исправит']],
+ ['fin','fɪn','плавник','🐟','We saw a shark\'s fin above the water.'],
+ ['gills','ɡɪlz','жабры','🐠','Fish breathe through their gills.',['green around the gills = позеленевший, бледный (от тошноты)']],
+ ['whiskers','ˈwɪs.kəz','усы (кошки)','🐱','A cat uses its whiskers to feel its way in the dark.',['the cat\'s whiskers = что-то превосходное']],
+ ['talons','ˈtæl.ənz','когти хищной птицы','🦅','The eagle caught the fish in its talons.',[],'talons — длинные когти орла, совы'],
+ ['tentacles','ˈten.tə.kəlz','щупальца','🐙','An octopus has eight tentacles.'],
+ ['hump','hʌmp','горб','🐫','A camel stores fat in its hump.',['be over the hump = худшее позади']],
+ ['beak','biːk','клюв','🐦','The bird picked up the seed with its beak.'],
+ ['claws','klɔːz','когти','🦀','The cat scratched the sofa with its claws.',['get your claws into someone = вцепиться в кого-то']],
+ ['fur','fɜː','мех, шерсть','🦊','The fox has thick red fur.',['the fur will fly = полетят клочки (будет скандал)']],
+ ['hide','haɪd','шкура (толстая, выделанная)','🐃','Shoes are made from cow hide.',['neither hide nor hair = ни слуху ни духу']],
+ ['coat','kəʊt','шерсть, шёрстный покров','🐕','Your dog has a lovely shiny coat.'],
+ ['scales','skeɪlz','чешуя','🐊','Fish and reptiles are covered in scales.',['the scales fell from my eyes = пелена спала с глаз']],
+ ['feathers','ˈfeð.əz','перья','🪶','The peacock showed off its bright feathers.',['birds of a feather flock together = рыбак рыбака видит издалека','ruffle someone\'s feathers = задеть, разозлить','a feather in your cap = повод для гордости']],
+ ['paw','pɔː','лапа','🐾','The dog gave me its paw.',['Paws off! = Руки прочь!']],
+ ['tail','teɪl','хвост','🐕','The dog wagged its tail.',['can\'t make head or tail of = ничего не понять']],
+ ['wings','wɪŋz','крылья','🦋','The butterfly opened its wings.',['take someone under your wing = взять под крыло','spread your wings = расправить крылья, стать самостоятельным']],
+ ['trunk','trʌŋk','хобот','🐘','The elephant sprayed water with its trunk.',[],'trunk у дерева — это ствол']
+],
+young:[
+ ['calf · calves','kɑːf · kɑːvz','телёнок · телята','🐄','The cow and her calf stood in the field.',[],'l не читается','calf. calves'],
+ ['chick','tʃɪk','цыплёнок, птенец','🐣','The hen sat on her eggs until the chicks hatched.',['Don\'t count your chickens before they\'re hatched = цыплят по осени считают']],
+ ['foal','fəʊl','жеребёнок','🐴','The foal stayed close to its mother.'],
+ ['kitten','ˈkɪt.ən','котёнок','🐈','Our cat had four kittens.',['have kittens = разнервничаться, переполошиться']],
+ ['lamb','læm','ягнёнок','🐑','In spring the fields are full of lambs.',['like a lamb to the slaughter = как овца на заклание'],'b на конце не читается'],
+ ['puppy','ˈpʌp.i','щенок','🐶','The puppy chewed my shoes.',['puppy love = первая детская влюблённость']],
+ ['hatch','hætʃ','вылупляться','🥚','The baby turtles hatch on the beach at night.',[],'hatchling — только что вылупившийся детёныш'],
+ ['hive','haɪv','улей','🐝','Bees live in a hive.',['a hive of activity = кипучее место, улей']],
+ ['stable','ˈsteɪ.bəl','конюшня','🐎','The horses are back in the stable.',['shut the stable door after the horse has bolted = после драки кулаками не машут']],
+ ['cage','keɪdʒ','клетка','🐤','The canary sings in its cage.'],
+ ['kennel','ˈken.əl','будка; собачий питомник','🐕‍🦺','The dog sleeps in a kennel in the garden.'],
+ ['tank','tæŋk','аквариум','🐠','We keep goldfish in a tank.'],
+ ['nest','nest','гнездо','🪺','A blackbird built a nest in our tree.',['fly the nest = покинуть родительский дом','empty nest = дом, из которого уехали дети']],
+ ['squeak','skwiːk','пищать (мышь)','🐭','A mouse squeaks.',['a narrow squeak = чудом обошлось']],
+ ['bark','bɑːk','лаять','🐕','A dog barks.',['His bark is worse than his bite = он только грозится','bark up the wrong tree = обращаться не по адресу'],'bark у дерева — это кора'],
+ ['neigh','neɪ','ржать (лошадь)','🐴','A horse neighs.'],
+ ['meow','miˈaʊ','мяукать','🐈‍⬛','A cat meows.'],
+ ['roar','rɔː','рычать, реветь','🦁','A lion roars.',['a roaring success = оглушительный успех']],
+ ['grunt','ɡrʌnt','хрюкать','🐖','A pig grunts.'],
+ ['twitter','ˈtwɪt.ə','щебетать','🐦','Birds twitter in the morning.']
+],
+animals:[
+ ['lion','ˈlaɪ.ən','лев','🦁','A pride of lions rested under a tree.',['the lion\'s share = львиная доля']],
+ ['giraffe','dʒɪˈrɑːf','жираф','🦒','Giraffes eat leaves from the tops of trees.'],
+ ['crocodile','ˈkrɒk.ə.daɪl','крокодил','🐊','There are crocodiles near the river.',['crocodile tears = крокодиловы слёзы']],
+ ['elephant','ˈel.ɪ.fənt','слон','🐘','An elephant never forgets.',['the elephant in the room = проблема, о которой все молчат','a white elephant = дорогая бесполезная вещь']],
+ ['hippo','ˈhɪp.əʊ','бегемот','🦛','Hippos spend most of the day in water.',[],'полностью: hippopotamus'],
+ ['zebra','ˈzeb.rə','зебра','🦓','A herd of zebras crossed the river.',[],'в американском: /ˈziː.brə/'],
+ ['rhino','ˈraɪ.nəʊ','носорог','🦏','Rhinos are hunted for their horn.',[],'полностью: rhinoceros'],
+ ['kangaroo','ˌkæŋ.ɡərˈuː','кенгуру','🦘','The kangaroo is a symbol of Australia.',['a kangaroo court = самосуд, неправедный суд']],
+ ['koala','kəʊˈɑː.lə','коала','🐨','Koalas sleep up to 20 hours a day.'],
+ ['platypus','ˈplæt.ɪ.pəs','утконос','🦆','The platypus is a mammal that lays eggs.'],
+ ['panda','ˈpæn.də','панда','🐼','Pandas eat bamboo.'],
+ ['snake','sneɪk','змея','🐍','The snake shed its skin.',['a snake in the grass = скрытый враг, предатель']],
+ ['penguin','ˈpeŋ.ɡwɪn','пингвин','🐧','Penguins can\'t fly, but they swim very well.'],
+ ['meerkat','ˈmɪə.kæt','сурикат','🦦','Meerkats stand on their back legs to look around.'],
+ ['seal','siːl','тюлень','🦭','Seals were lying on the rocks.',['seal the deal = скрепить сделку (другое значение)']],
+ ['seagull','ˈsiː.ɡʌl','чайка','🕊️','A seagull stole my chips!'],
+ ['monkey','ˈmʌŋ.ki','обезьяна','🐒','Monkeys swing from tree to tree.',['monkey business = проделки, махинации']],
+ ['orangutan','ɔːˈræŋ.uːˌtæn','орангутан','🦧','Orangutans live in the rainforests of Borneo.',[],'в тетради: orangutang — правильно orangutan'],
+ ['killer whale · orca','ˈkɪl.ə weɪl · ˈɔː.kə','косатка','🐋','A pod of orcas swam past the boat.',[],'','killer whale. orca'],
+ ['whale','weɪl','кит','🐳','The blue whale is the largest animal on Earth.',['have a whale of a time = отлично провести время']],
+ ['turtle','ˈtɜː.təl','черепаха (морская)','🐢','Sea turtles return to the same beach to lay eggs.',[],'сухопутная черепаха — tortoise'],
+ ['butterfly','ˈbʌt.ə.flaɪ','бабочка','🦋','A butterfly landed on the flower.',['have butterflies in your stomach = волноваться, мандражировать']],
+ ['frog','frɒɡ','лягушка','🐸','Frogs were croaking by the pond.',['have a frog in your throat = охрипнуть']],
+ ['swan','swɒn','лебедь','🦢','Two swans swam on the lake.',['swan song = лебединая песня']],
+ ['jellyfish','ˈdʒel.i.fɪʃ','медуза','🪼','Be careful — jellyfish can sting.',['a jellyfish = бесхребетный человек (разг.)']],
+ ['bird of paradise','ˌbɜːd əv ˈpær.ə.daɪs','райская птица','🦜','Birds of paradise have amazing colourful feathers.'],
+ ['hummingbird','ˈhʌm.ɪŋ.bɜːd','колибри','🐦','A hummingbird can fly backwards.'],
+ ['mantis','ˈmæn.tɪs','богомол','🦗','The mantis waited without moving.',[],'полностью: praying mantis'],
+ ['wildebeest','ˈwɪl.də.biːst','антилопа гну','🐃','Millions of wildebeest migrate across the Serengeti.'],
+ ['seahorse','ˈsiː.hɔːs','морской конёк','🌊','In seahorses, the male carries the babies.'],
+ ['dragonfly','ˈdræɡ.ən.flaɪ','стрекоза','🪰','A dragonfly flew over the water.'],
+ ['firefly','ˈfaɪə.flaɪ','светлячок','✨','Fireflies glow in the dark on summer nights.']
+],
+groups:[
+ ['herd','hɜːd','стадо','🐄','A herd of cows / elephants / zebras.',['herd mentality = стадное мышление']],
+ ['pride','praɪd','прайд (львов); гордость','🦁','A pride of lions.',['take pride in = гордиться чем-то']],
+ ['pod','pɒd','стая (китов, дельфинов); стручок','🐬','A pod of dolphins followed our boat.',['like two peas in a pod = похожи как две капли воды']],
+ ['school','skuːl','косяк (рыб)','🐟','A school of fish swam past.'],
+ ['swarm','swɔːm','рой','🐝','A swarm of bees.',['be swarming with = кишеть (людьми, туристами)']],
+ ['flock','flɒk','стая (птиц), отара (овец)','🐑','A flock of birds / sheep.',['flock to = стекаться толпой']],
+ ['parliament of owls','ˈpɑː.lə.mənt əv aʊlz','«парламент» — стая сов','🦉','A parliament of owls sat in the old tree.',[],'в тетради «parliament of seagulls» — так говорят про сов; стая чаек — a colony of seagulls']
+],
+nature:[
+ ['forest','ˈfɒr.ɪst','лес','🌲','The forest is home to many animals.',['can\'t see the wood for the trees = за деревьями леса не видеть']],
+ ['jungle','ˈdʒʌŋ.ɡəl','джунгли','🌴','Orangutans live deep in the jungle.',['It\'s a jungle out there = там выживает сильнейший']],
+ ['storm','stɔːm','буря, шторм','⛈️','The storm destroyed many trees.',['a storm in a teacup = буря в стакане воды']],
+ ['rainbow','ˈreɪn.bəʊ','радуга','🌈','After the rain we saw a rainbow.'],
+ ['monsoon','mɒnˈsuːn','муссон (сезон дождей)','🌧️','The monsoon brings heavy rain to India.'],
+ ['mountain range','ˈmaʊn.tɪn reɪndʒ','горный хребет','⛰️','The Andes is the longest mountain range in the world.'],
+ ['snow-capped mountains','ˈsnəʊ.kæpt ˈmaʊn.tɪnz','заснеженные вершины','🏔️','We could see snow-capped mountains in the distance.',[],'в тетради «snow-kept» — правильно snow-capped (cap = шапка)'],
+ ['glacier','ˈɡlæs.i.ə','ледник','🧊','The glacier is melting faster every year.',['at a glacial pace = черепашьими темпами']],
+ ['iceberg','ˈaɪs.bɜːɡ','айсберг','🧊','The Titanic hit an iceberg.',['the tip of the iceberg = верхушка айсберга']],
+ ['meadow','ˈmed.əʊ','луг','🌼','Cows were grazing in the meadow.'],
+ ['moss','mɒs','мох','🌿','The stones were covered in moss.',['A rolling stone gathers no moss = кто часто переезжает, добра не наживёт']],
+ ['hot spring','ˌhɒt ˈsprɪŋ','горячий источник','♨️','In Iceland you can swim in a hot spring.'],
+ ['the Northern Lights','ðə ˌnɔː.ðən ˈlaɪts','северное сияние','🌌','We saw the Northern Lights in Norway.',[],'научное название: aurora borealis'],
+ ['seaweed','ˈsiː.wiːd','морские водоросли','🌊','The beach was covered in seaweed.'],
+ ['bloom','bluːm','цвести; цветение','🌸','The roses are in full bloom.',['in full bloom = в полном цвету','a late bloomer = тот, кто раскрылся позже других']],
+ ['sacred','ˈseɪ.krɪd','священный','🕯️','In India the cow is a sacred animal.']
+],
+plant:[
+ ['flora','ˈflɔː.rə','флора, растительный мир','🌱','The flora and fauna of the island are unique.',[],'flora — растения, fauna — животные. В тетради над цветком подписано fauna — там нужно flora'],
+ ['fauna','ˈfɔː.nə','фауна, животный мир','🐾','The fauna of Australia includes many marsupials.'],
+ ['vegetation','ˌvedʒ.ɪˈteɪ.ʃən','растительность','🌾','Herbivores eat grass and other vegetation.'],
+ ['bud','bʌd','бутон; почка','🌷','The rose bush is covered in buds.',['nip something in the bud = пресечь в зародыше']],
+ ['petal','ˈpet.əl','лепесток','🌸','The petals fell from the flower.'],
+ ['leaf · leaves','liːf · liːvz','лист · листья','🍃','In autumn the leaves turn yellow.',['turn over a new leaf = начать с чистого листа'],'','leaf. leaves'],
+ ['stem','stem','стебель','🌱','Cut the stems before you put the flowers in water.',['stem from = происходить, проистекать из']],
+ ['root','ruːt','корень','🫚','The tree has very deep roots.',['take root = укорениться, прижиться','the root of the problem = корень проблемы']],
+ ['thorn','θɔːn','шип, колючка','🌹','Be careful — roses have thorns.',['a thorn in your side = бельмо на глазу, вечная помеха']],
+ ['branch','brɑːntʃ','ветка','🌳','A bird sat on a branch.',['branch out = расширять деятельность']],
+ ['twig','twɪɡ','веточка, прутик','🌿','We used dry twigs to start the fire.'],
+ ['trunk','trʌŋk','ствол (дерева)','🪵','The old oak has a huge trunk.',[],'trunk у слона — это хобот'],
+ ['bark','bɑːk','кора','🪵','The bark of a birch is white.',[],'омоним: to bark — лаять'],
+ ['crown','kraʊn','крона','🌳','The tree has a wide crown.',[],'ещё значение: корона'],
+ ['foliage','ˈfəʊ.li.ɪdʒ','листва','🍂','Autumn foliage in Canada is famous.']
+],
+trees:[
+ ['bush','bʊʃ','куст','🌳','A small bird was hiding in the bush.',['beat around the bush = ходить вокруг да около']],
+ ['chestnut','ˈtʃes.nʌt','каштан','🌰','Children collect chestnuts in autumn.',['an old chestnut = избитая шутка, старая история'],'t в середине не читается'],
+ ['mistletoe','ˈmɪs.əl.təʊ','омела','🌿','People kiss under the mistletoe at Christmas.',[],'t не читается'],
+ ['poplar','ˈpɒp.lə','тополь','🌳','In June poplar fluff flies everywhere in Moscow.'],
+ ['willow','ˈwɪl.əʊ','ива','🌳','A willow grows beside the river.',['weeping willow = плакучая ива']],
+ ['larch','lɑːtʃ','лиственница','🌲','The larch loses its needles in winter.'],
+ ['fir','fɜː','пихта, ель','🌲','We decorate a fir tree at New Year.'],
+ ['pine','paɪn','сосна','🌲','The air in the pine forest smells wonderful.',['pine for = тосковать по']],
+ ['maple','ˈmeɪ.pəl','клён','🍁','The maple leaf is on Canada\'s flag.'],
+ ['baobab','ˈbeɪ.əʊ.bæb','баобаб','🌳','The baobab can store water in its trunk.'],
+ ['palm','pɑːm','пальма; ладонь','🌴','Coconuts grow on palm trees.',[],'l не читается']
+],
+garden:[
+ ['rose','rəʊz','роза','🌹','She grows red roses in her garden.',['Life isn\'t a bed of roses = жизнь — не сахар','see the world through rose-tinted glasses = смотреть сквозь розовые очки']],
+ ['tulip','ˈtjuː.lɪp','тюльпан','🌷','Holland is famous for its tulips.'],
+ ['peony','ˈpiː.ə.ni','пион','🌸','Peonies bloom in early summer.',[],'в тетради: pioni — правильно peony'],
+ ['forget-me-not','fəˈɡet.mi.nɒt','незабудка','💙','Forget-me-nots are tiny blue flowers.'],
+ ['sunflower','ˈsʌnˌflaʊ.ə','подсолнух','🌻','Sunflowers turn to face the sun.'],
+ ['carnation','kɑːˈneɪ.ʃən','гвоздика','🌺','He gave her a bunch of carnations.'],
+ ['cornflower','ˈkɔːnˌflaʊ.ə','василёк','💠','Cornflowers are bright blue.'],
+ ['dragon fruit','ˈdræɡ.ən fruːt','питахайя, драконий фрукт','🐉','Dragon fruit is pink outside and white inside.'],
+ ['lychee','ˌlaɪˈtʃiː','личи','🍒','Peel the lychee before you eat it.',[],'в тетради: lichi — правильно lychee'],
+ ['mango','ˈmæŋ.ɡəʊ','манго','🥭','This mango is perfectly ripe.'],
+ ['coconut','ˈkəʊ.kə.nʌt','кокос','🥥','We drank coconut water on the beach.'],
+ ['pineapple','ˈpaɪnˌæp.əl','ананас','🍍','Pineapple on pizza — yes or no?'],
+ ['pumpkin','ˈpʌmp.kɪn','тыква','🎃','We carved a pumpkin for Halloween.'],
+ ['radish','ˈræd.ɪʃ','редис','🔴','Add some sliced radish to the salad.'],
+ ['beetroot','ˈbiːt.ruːt','свёкла','🟣','Borscht is made with beetroot.',['go as red as a beetroot = покраснеть как рак']],
+ ['turnip','ˈtɜː.nɪp','репа','🟡','In the fairy tale, a whole family pulls up a giant turnip.'],
+ ['potato','pəˈteɪ.təʊ','картофель','🥔','Mashed potatoes, please.',['a couch potato = лежебока у телевизора','a hot potato = острый, неудобный вопрос']],
+ ['broccoli','ˈbrɒk.əl.i','брокколи','🥦','Steam the broccoli for five minutes.'],
+ ['aubergine','ˈəʊ.bə.ʒiːn','баклажан','🍆','Aubergines are used in moussaka.',[],'в американском: eggplant'],
+ ['courgette','kɔːˈʒet','кабачок, цукини','🥒','Fry the courgettes in olive oil.',[],'в американском: zucchini']
+],
+phrases:[
+ ['human nature','ˌhjuː.mən ˈneɪ.tʃə','человеческая природа','🧠','It\'s human nature to want to find a solution to our problems.'],
+ ['animal products','ˌæn.ɪ.məl ˈprɒd.ʌkts','продукты животного происхождения','🥛','Vegans do not use or eat any animal products.'],
+ ['human being','ˌhjuː.mən ˈbiː.ɪŋ','человек (как живое существо)','🧍','I would rather be served by a human being than by a computer.'],
+ ['Mother Nature','ˌmʌð.ə ˈneɪ.tʃə','мать-природа','🌍','Mother Nature can be both beautiful and destructive.'],
+ ['the animal kingdom','ði ˌæn.ɪ.məl ˈkɪŋ.dəm','животный мир','🐾','Man is the most dangerous creature in the animal kingdom.'],
+ ['the natural balance','ðə ˌnætʃ.ər.əl ˈbæl.əns','природное равновесие','⚖️','Chemical spills can destroy the natural balance.'],
+ ['human rights','ˌhjuː.mən ˈraɪts','права человека','✊','In some countries prisoners are denied basic human rights.'],
+ ['take care of nature','teɪk ˈkeər əv ˈneɪ.tʃə','беречь природу','🌱','We must take care of nature.',[],'без артикля: NOT «take care of the nature». И natural — прилагательное: a natural process'],
+ ['second nature','ˌsek.ənd ˈneɪ.tʃə','вторая натура','🔁','After a year, driving became second nature to me.'],
+ ['the last straw','ðə ˌlɑːst ˈstrɔː','последняя капля','🐫','His rude email was the last straw.',['the straw that broke the camel\'s back = соломинка, сломавшая спину верблюду']],
+ ['Birds of a feather flock together','ˌbɜːdz əv ə ˈfeð.ə flɒk təˈɡeð.ə','рыбак рыбака видит издалека','🪶','They\'re both lazy — birds of a feather flock together.'],
+ ['A leopard can\'t change its spots','ə ˈlep.əd kɑːnt tʃeɪndʒ ɪts spɒts','горбатого могила исправит','🐆','He promised to stop lying, but a leopard can\'t change its spots.'],
+ ['Poachers make the best gamekeepers','ˈpəʊ.tʃəz meɪk ðə best ˈɡeɪmˌkiː.pəz','лучший сторож — бывший вор','🪤','The bank hired a former hacker: poachers make the best gamekeepers.']
+]};
+
+const WORDS=[];
+CATS.forEach(([c])=>RAW[c].forEach((r,i)=>{
+  const [en,ipa,ru,em,ex,id,note,say]=r;
+  WORDS.push({id:c+'-'+i,cat:c,en,ipa,ru,em,ex:ex||'',idioms:(id||[]).map(s=>{const p=s.split(' = ');return{en:p[0],ru:p[1]||''}}),note:note||'',say:say||en.replace(/ · /g,'. ')});
+}));
+const byId=Object.fromEntries(WORDS.map(w=>[w.id,w]));
+
+/* ---------- storage (best effort) ---------- */
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let known=new Set(store.get('akv-known',[]));
+const S={mode:'list',cat:'all',q:'',hide:store.get('akv-hide',false),slow:store.get('akv-slow',false)};
+
+/* ---------- speech ---------- */
+let voice=null;
+function pickVoice(){
+  if(!('speechSynthesis' in window))return;
+  const vs=speechSynthesis.getVoices();
+  voice=vs.find(v=>/en[-_]GB/i.test(v.lang)&&/female|Serena|Kate|Martha|Google UK English Female/i.test(v.name))
+     ||vs.find(v=>/en[-_]GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;
+}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function speak(text,btn,slow){
+  if(!('speechSynthesis' in window)){toast('Озвучка недоступна в этом браузере');return}
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=voice?voice.lang:'en-GB'; if(voice)u.voice=voice;
+    u.rate=(slow??S.slow)?0.6:0.92;
+    if(btn){btn.classList.add('playing');u.onend=u.onerror=()=>btn.classList.remove('playing')}
+    speechSynthesis.speak(u);
+  }catch(e){toast('Не получилось воспроизвести звук')}
+}
+let tT;function toast(t){const el=document.getElementById('toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2200)}
+
+/* ---------- helpers ---------- */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function filtered(){
+  const q=S.q.trim().toLowerCase();
+  return WORDS.filter(w=>(S.cat==='all'||w.cat===S.cat)&&(!q||w.en.toLowerCase().includes(q)||w.ru.toLowerCase().includes(q)||w.idioms.some(i=>i.en.toLowerCase().includes(q)||i.ru.toLowerCase().includes(q))));
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function setKnown(id,v){v?known.add(id):known.delete(id);store.set('akv-known',[...known]);updateProgress()}
+function updateProgress(){
+  document.getElementById('progTxt').textContent=`выучено ${known.size} из ${WORDS.length}`;
+  document.getElementById('progBar').style.width=(known.size/WORDS.length*100)+'%';
+}
+
+/* ---------- category chips ---------- */
+function renderCats(){
+  const el=document.getElementById('cats');
+  const btn=(id,label,n)=>`<button data-cat="${id}" aria-pressed="${S.cat===id}">${esc(label)}<b>${n}</b></button>`;
+  el.innerHTML=btn('all','Все слова',WORDS.length)+CATS.map(([c,l])=>btn(c,l,RAW[c].length)).join('');
+}
+document.getElementById('cats').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;S.cat=b.dataset.cat;renderCats();render();
+});
+
+/* ---------- list mode ---------- */
+function cardHTML(w){
+  const flag=w.idioms.length?`<span class="flag" title="Есть устойчивые выражения">+${w.idioms.length}</span>`:'';
+  return `<div class="w${known.has(w.id)?' known':''}" role="button" tabindex="0" data-open="${w.id}" aria-label="${esc(w.en)} — ${esc(w.ru)}">
+    <span class="em" aria-hidden="true">${w.em}</span>
+    <span class="en" lang="en">${esc(w.en)}</span>
+    <span class="ipa">/${esc(w.ipa)}/</span>
+    <span class="ru">${esc(w.ru)}</span>${flag}
+    <button class="spk" data-say="${w.id}" aria-label="Произнести ${esc(w.en)}">${ICON_SPK}</button>
+  </div>`;
+}
+function renderList(){
+  const list=filtered();
+  if(!list.length)return `<p class="empty">Ничего не нашлось по запросу «${esc(S.q)}». Попробуй по-русски или по-английски.</p>`;
+  const groups=CATS.filter(([c])=>list.some(w=>w.cat===c));
+  return groups.map(([c,l,src])=>{
+    const ws=list.filter(w=>w.cat===c);
+    return `<div class="section-h"><h2>${esc(l)}</h2><span>${esc(src)}</span><small>${ws.filter(w=>known.has(w.id)).length}/${ws.length} выучено</small></div>
+      <div class="grid">${ws.map(cardHTML).join('')}</div>`;
+  }).join('');
+}
+
+/* ---------- detail sheet ---------- */
+let openId=null;
+function openSheet(id,autoplay=true){
+  const w=byId[id];if(!w)return;openId=id;
+  const list=filtered();const idx=list.findIndex(x=>x.id===id);
+  const isK=known.has(id);
+  document.getElementById('sheetHost').innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-en">
+   <button class="x" id="shX" aria-label="Закрыть">×</button>
+   <div class="sheet-in">
+    <div class="hero"><span class="em" aria-hidden="true">${w.em}</span><div style="min-width:0">
+      <div class="en" id="sh-en">${esc(w.en)}</div><div class="ipa">/${esc(w.ipa)}/</div><div class="ru">${esc(w.ru)}</div></div></div>
+    <div class="say">
+      <button class="btn primary" data-sp="word" data-slow="0">${ICON_SPK} Произнести</button>
+      <button class="btn" data-sp="word" data-slow="1">${ICON_SLOW} Медленно</button>
+      <button class="btn${isK?' ok':''}" id="shKnow">${isK?'✓ Выучено':'Отметить как выученное'}</button>
+    </div>
+    ${w.ex?`<div class="block"><h3>Пример</h3><div class="ex"><button class="mini" data-sp="ex" aria-label="Произнести пример">${ICON_SPK}</button><span>${esc(w.ex)}</span></div></div>`:''}
+    ${w.idioms.length?`<div class="block"><h3>Устойчивые выражения</h3><ul class="idioms">${w.idioms.map((i,k)=>`<li><button class="mini" data-sp="id" data-k="${k}" aria-label="Произнести ${esc(i.en)}">${ICON_SPK}</button><div class="t"><b>${esc(i.en)}</b><span>${esc(i.ru)}</span></div></li>`).join('')}</ul></div>`:''}
+    ${w.note?`<div class="block"><h3>Заметка</h3><div class="note">${esc(w.note)}</div></div>`:''}
+    <div class="nav"><button class="btn" id="shPrev" ${idx<=0?'disabled':''}>← Назад</button><span style="align-self:center;color:var(--muted);font-size:13px">${idx>=0?`${idx+1} / ${list.length}`:''}</span><button class="btn" id="shNext" ${idx<0||idx>=list.length-1?'disabled':''}>Дальше →</button></div>
+   </div></div></div>`;
+  const host=document.getElementById('sheetHost');
+  host.querySelector('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim')closeSheet()});
+  host.querySelector('#shX').onclick=closeSheet;
+  host.querySelector('#shKnow').onclick=()=>{setKnown(id,!known.has(id));openSheet(id,false);if(S.mode==='list')softRefresh()};
+  host.querySelector('#shPrev').onclick=()=>openSheet(list[idx-1].id);
+  host.querySelector('#shNext').onclick=()=>openSheet(list[idx+1].id);
+  host.querySelectorAll('[data-sp]').forEach(b=>b.onclick=()=>{
+    const t=b.dataset.sp==='word'?w.say:b.dataset.sp==='ex'?w.ex:w.idioms[+b.dataset.k].en;
+    speak(t,b,b.dataset.slow==='1'?true:undefined);
+  });
+  host.querySelector('#shX').focus();
+  if(autoplay)speak(w.say);
+}
+function closeSheet(){const id=openId;openId=null;document.getElementById('sheetHost').innerHTML='';const el=document.querySelector(`[data-open="${id}"]`);if(el)el.focus()}
+function softRefresh(){document.querySelectorAll('.w[data-open]').forEach(el=>el.classList.toggle('known',known.has(el.dataset.open)))}
+
+/* ---------- flashcards ---------- */
+const FC={deck:[],i:0,dir:'en',flipped:false};
+function buildDeck(){const l=filtered();FC.deck=shuffle(l.filter(w=>!known.has(w.id))).concat(shuffle(l.filter(w=>known.has(w.id))));FC.i=0;FC.flipped=false}
+function renderCards(){
+  if(!FC.deck.length)buildDeck();
+  if(!FC.deck.length)return `<p class="empty">В этой теме нет слов. Выбери другую.</p>`;
+  if(FC.i>=FC.deck.length){
+    return `<div class="fc-wrap" style="text-align:center"><div class="face" style="position:static;min-height:260px"><div class="em">🎉</div><div class="en">Колода пройдена</div><div class="ru">выучено ${known.size} из ${WORDS.length}</div></div><button class="btn primary" id="fcRestart" style="justify-content:center">Перемешать и начать заново</button></div>`;
+  }
+  const w=FC.deck[FC.i];
+  const front=FC.dir==='en'
+    ?`<span class="em" aria-hidden="true">${w.em}</span><div class="en">${esc(w.en)}</div><div class="ipa">/${esc(w.ipa)}/</div>`
+    :`<span class="em" aria-hidden="true">${w.em}</span><div class="ru">${esc(w.ru)}</div>`;
+  const back=FC.dir==='en'
+    ?`<div class="ipa" lang="en">${esc(w.en)}</div><div class="ru">${esc(w.ru)}</div>${w.ex?`<div class="ex">${esc(w.ex)}</div>`:''}${w.idioms[0]?`<div class="note" style="font-size:19px">${esc(w.idioms[0].en)} — ${esc(w.idioms[0].ru)}</div>`:''}`
+    :`<div class="ipa">${esc(w.ru)}</div><div class="en" lang="en">${esc(w.en)}</div><div class="ipa">/${esc(w.ipa)}/</div>${w.ex?`<div class="ex">${esc(w.ex)}</div>`:''}`;
+  return `<div class="fc-wrap">
+   <div class="fc-meta"><span>Карточка ${FC.i+1} из ${FC.deck.length}${known.has(w.id)?' · уже выучена':''}</span>
+     <span class="seg" role="group" aria-label="Сторона"><button data-dir="en" aria-pressed="${FC.dir==='en'}">EN → RU</button><button data-dir="ru" aria-pressed="${FC.dir==='ru'}">RU → EN</button></span>
+     <button class="btn" id="fcShuffle">Перемешать</button></div>
+   <div class="card3d${FC.flipped?' flipped':''}" id="fcCard" role="button" tabindex="0" aria-label="Перевернуть карточку">
+     <div class="inner"><div class="face front">${front}<div class="hint">нажми, чтобы перевернуть · пробел</div></div>
+     <div class="face back">${back}</div></div></div>
+   <div class="say" style="justify-content:center"><button class="btn" id="fcSay">${ICON_SPK} Произнести</button><button class="btn" id="fcMore">Подробнее</button></div>
+   <div class="fc-actions"><button class="btn again" id="fcAgain">Ещё не помню</button><button class="btn ok" id="fcGot">Помню ✓</button></div>
+  </div>`;
+}
+function bindCards(){
+  const r=document.getElementById('fcRestart');if(r){r.onclick=()=>{buildDeck();render()};return}
+  if(!FC.deck.length)return;
+  const w=FC.deck[FC.i];
+  const card=document.getElementById('fcCard');
+  const flip=()=>{FC.flipped=!FC.flipped;card.classList.toggle('flipped',FC.flipped);if(FC.flipped&&FC.dir==='ru')speak(w.say)};
+  card.onclick=flip;card.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();flip()}};
+  document.getElementById('fcSay').onclick=e=>speak(w.say,e.currentTarget);
+  document.getElementById('fcMore').onclick=()=>openSheet(w.id,false);
+  document.getElementById('fcShuffle').onclick=()=>{buildDeck();render()};
+  document.getElementById('fcAgain').onclick=()=>{setKnown(w.id,false);FC.deck.push(w);next()};
+  document.getElementById('fcGot').onclick=()=>{setKnown(w.id,true);next()};
+  document.querySelectorAll('[data-dir]').forEach(b=>b.onclick=()=>{FC.dir=b.dataset.dir;FC.flipped=false;render()});
+  if(FC.dir==='en')speak(w.say);
+}
+function next(){FC.i++;FC.flipped=false;render()}
+
+/* ---------- quiz ---------- */
+const QZ={type:'en',cur:null,opts:[],done:false,score:0,total:0};
+function newQ(){
+  let pool=filtered();if(pool.length<4)pool=WORDS;
+  const w=pool[Math.random()*pool.length|0];
+  const same=WORDS.filter(x=>x.cat===w.cat&&x.id!==w.id&&x.ru!==w.ru);
+  const other=WORDS.filter(x=>x.cat!==w.cat);
+  let d=shuffle(same).slice(0,3);if(d.length<3)d=d.concat(shuffle(other).slice(0,3-d.length));
+  QZ.cur=w;QZ.opts=shuffle([w,...d]);QZ.done=false;
+}
+function renderQuiz(){
+  if(!QZ.cur)newQ();
+  const w=QZ.cur,t=QZ.type;
+  const q=t==='en'?`<span class="em" aria-hidden="true">${w.em}</span><div class="big">${esc(w.en)}</div><div class="ask">Что это значит?</div>`
+        :t==='ru'?`<span class="em" aria-hidden="true">${w.em}</span><div class="ruq">${esc(w.ru)}</div><div class="ask">Как это по-английски?</div>`
+        :`<button class="btn primary" id="qzPlay" style="font-size:16px;padding:14px 20px">${ICON_SPK} Послушать ещё раз</button><div class="ask">Выбери перевод услышанного слова</div>`;
+  const cls=t==='ru'?'en-o':'ru-o';
+  return `<div class="qz">
+   <div class="fc-meta"><span class="seg" role="group" aria-label="Тип вопроса">
+     <button data-qt="en" aria-pressed="${t==='en'}">EN → RU</button><button data-qt="ru" aria-pressed="${t==='ru'}">RU → EN</button><button data-qt="audio" aria-pressed="${t==='audio'}">На слух</button></span>
+     <span>Счёт: ${QZ.score} / ${QZ.total}</span></div>
+   <div class="qz-q">${q}</div>
+   <div class="opts">${QZ.opts.map((o,k)=>`<button class="opt ${cls}" data-o="${o.id}"><span class="k">${k+1}</span><span>${esc(t==='ru'?o.en:o.ru)}</span></button>`).join('')}</div>
+   <div class="qz-fb" id="qzFb" aria-live="polite"></div>
+   <div class="say" style="justify-content:center"><button class="btn" id="qzNext" hidden>Следующий вопрос →</button></div>
+  </div>`;
+}
+function bindQuiz(){
+  const w=QZ.cur;
+  document.querySelectorAll('[data-qt]').forEach(b=>b.onclick=()=>{QZ.type=b.dataset.qt;newQ();render()});
+  const p=document.getElementById('qzPlay');if(p)p.onclick=e=>speak(w.say,e.currentTarget);
+  if(QZ.type!=='ru')speak(w.say);
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(b.dataset.o));
+  document.getElementById('qzNext').onclick=()=>{newQ();render()};
+}
+function answer(id){
+  if(QZ.done)return;QZ.done=true;QZ.total++;
+  const w=QZ.cur,ok=id===w.id;if(ok)QZ.score++;
+  document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(b.dataset.o===w.id)b.classList.add('right');else if(b.dataset.o===id)b.classList.add('wrong')});
+  const fb=document.getElementById('qzFb');
+  fb.innerHTML=(ok?'<b style="color:var(--ok)">Верно.</b> ':'<b style="color:var(--red)">Не то.</b> ')+`${esc(w.en)} /${esc(w.ipa)}/ — ${esc(w.ru)}`;
+  if(QZ.type==='ru')speak(w.say);
+  if(!ok)setKnown(w.id,false);
+  const n=document.getElementById('qzNext');n.hidden=false;n.focus();
+  document.querySelector('.fc-meta span:last-child').textContent=`Счёт: ${QZ.score} / ${QZ.total}`;
+}
+
+/* ---------- diagrams ---------- */
+function lab(x,y,lx,ly,id,anchor='start'){
+  const w=WORDS.find(v=>v.id===id);const en=w.en.split(' · ')[0];const ru=w.ru.split(' · ')[0].split(',')[0].split('(')[0].trim();
+  const tx=anchor==='end'?lx-4:lx+4;const bx=anchor==='end'?lx-120:lx;
+  return `<g class="lab" tabindex="0" role="button" data-open="${id}" aria-label="${esc(en)} — ${esc(ru)}">
+   <line x1="${x}" y1="${y}" x2="${lx}" y2="${ly}"/><circle cx="${x}" cy="${y}" r="3" fill="var(--red)"/>
+   <rect x="${bx}" y="${ly-17}" width="120" height="42" rx="3"/>
+   <text x="${tx}" y="${ly}" text-anchor="${anchor}">${esc(en)}</text>
+   <text class="r" x="${tx}" y="${ly+19}" text-anchor="${anchor}">${esc(ru)}</text></g>`;
+}
+function renderDiagram(){
+  const P=id=>'plant-'+RAW.plant.findIndex(r=>r[0].startsWith(id));
+  const flower=`<svg viewBox="0 0 420 450" role="img" aria-label="Строение цветка">
+   <g fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M200 380 C202 320 196 260 200 196" />
+    <path d="M200 300 C170 290 145 268 140 240 C170 240 192 262 200 300 Z" fill="var(--ok-soft)"/>
+    <path d="M201 272 C226 266 250 250 262 228 C236 228 212 246 201 272 Z" fill="var(--ok-soft)"/>
+    <path d="M201 330 C240 322 280 300 298 266"/>
+    <path d="M298 266 C288 248 296 228 306 236 C314 226 324 244 316 262 C310 270 302 272 298 266 Z" fill="var(--red-soft)"/>
+    ${[0,60,120,180,240,300].map(a=>`<ellipse cx="200" cy="106" rx="20" ry="34" transform="rotate(${a} 200 136)" fill="var(--red-soft)"/>`).join('')}
+    <circle cx="200" cy="136" r="14" fill="var(--pen-soft)"/>
+    <path d="M200 380 C188 398 170 404 156 418 M200 380 C204 400 196 414 200 430 M200 380 C214 396 232 402 246 418 M188 395 C180 392 172 396 166 400 M222 398 C230 404 236 412 238 418"/>
+    <path d="M60 380 H340" stroke="var(--muted)" stroke-dasharray="4 5"/>
+   </g>
+   ${lab(310,240,320,190,P('bud'))}
+   ${lab(190,82,120,40,P('petal'),'end')}
+   ${lab(150,262,120,230,P('leaf'),'end')}
+   ${lab(200,345,262,334,P('stem'))}
+   ${lab(160,414,120,418,P('root'),'end')}
+  </svg>`;
+  const tree=`<svg viewBox="0 0 420 470" role="img" aria-label="Строение дерева">
+   <g stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M110 170 C80 150 92 100 130 96 C130 60 180 40 210 60 C240 34 300 50 300 92 C340 96 350 150 316 172 C330 206 290 232 260 214 C240 236 190 236 172 214 C140 232 96 210 110 170 Z" fill="var(--ok-soft)"/>
+    <path d="M190 400 C196 340 194 290 186 240 L234 240 C226 290 224 340 230 400 Z" fill="var(--card)"/>
+    <path d="M200 270 C200 300 202 330 200 370 M216 260 C220 300 218 340 222 380" fill="none" stroke="var(--muted)" stroke-width="1.4"/>
+    <path d="M190 246 C170 220 150 200 128 186 M232 244 C252 214 272 198 300 186 M206 240 C206 210 210 180 214 150 M150 202 C142 196 132 196 122 198" fill="none"/>
+    <path d="M300 186 C312 180 322 172 330 160" fill="none"/>
+    <path d="M330 160 C340 150 356 152 356 166 C344 172 334 170 330 160 Z" fill="var(--ok-soft)"/>
+    <path d="M190 400 C170 410 146 412 126 424 M230 400 C252 410 276 414 296 426 M210 402 C210 418 206 430 210 446" fill="none"/>
+    <path d="M60 400 H360" stroke="var(--muted)" stroke-dasharray="4 5" fill="none"/>
+   </g>
+   ${lab(210,70,250,22,P('crown'))}
+   ${lab(118,118,100,30,P('foliage'),'end')}
+   ${lab(345,165,330,250,P('leaf'))}
+   ${lab(276,200,300,300,P('branch'))}
+   ${lab(140,196,120,250,P('twig'),'end')}
+   ${lab(226,330,300,350,P('trunk'))}
+   ${lab(196,300,120,320,P('bark'),'end')}
+   ${lab(140,418,110,436,P('root'),'end')}
+  </svg>`;
+  return `<div class="dg">
+   <figure><figcaption>Flower <span>цветок</span></figcaption>${flower}<p>Нажми на подпись — услышишь слово и откроется карточка.</p></figure>
+   <figure><figcaption>Tree <span>дерево</span></figcaption>${tree}<p>Совет: trunk у дерева — ствол, у слона — хобот; bark — кора, а to bark — лаять.</p></figure>
+  </div>`;
+}
+
+/* ---------- main render ---------- */
+function render(){
+  const m=document.getElementById('main');
+  document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-selected',b.dataset.mode===S.mode));
+  if(S.mode==='list'){m.innerHTML=renderList()}
+  else if(S.mode==='cards'){m.innerHTML=renderCards();bindCards()}
+  else if(S.mode==='quiz'){m.innerHTML=renderQuiz();bindQuiz()}
+  else{m.innerHTML=renderDiagram()}
+}
+document.querySelector('.modes').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;S.mode=b.dataset.mode;
+  if(S.mode==='cards')buildDeck();if(S.mode==='quiz')newQ();
+  try{history.replaceState(null,'','#'+S.mode)}catch(_){}
+  render();window.scrollTo({top:0});
+});
+document.getElementById('main').addEventListener('click',e=>{
+  const s=e.target.closest('[data-say]');
+  if(s){e.stopPropagation();speak(byId[s.dataset.say].say,s);return}
+  const o=e.target.closest('[data-open]');if(o)openSheet(o.dataset.open);
+});
+document.getElementById('main').addEventListener('keydown',e=>{
+  const o=e.target.closest('[data-open]');
+  if(o&&(e.key==='Enter'||e.key===' ')&&e.target===o){e.preventDefault();openSheet(o.dataset.open)}
+});
+let qT;document.getElementById('q').addEventListener('input',e=>{clearTimeout(qT);qT=setTimeout(()=>{S.q=e.target.value;if(S.mode==='cards')buildDeck();if(S.mode==='quiz')newQ();render()},120)});
+const tgHide=document.getElementById('tgHide'),tgSlow=document.getElementById('tgSlow');
+function syncTg(){tgHide.setAttribute('aria-pressed',S.hide);tgSlow.setAttribute('aria-pressed',S.slow);document.body.classList.toggle('hide-ru',S.hide)}
+tgHide.onclick=()=>{S.hide=!S.hide;store.set('akv-hide',S.hide);syncTg()};
+tgSlow.onclick=()=>{S.slow=!S.slow;store.set('akv-slow',S.slow);syncTg();toast(S.slow?'Произношение замедлено':'Обычная скорость')};
+document.addEventListener('keydown',e=>{
+  if(openId){if(e.key==='Escape')closeSheet();return}
+  if(e.target.tagName==='INPUT')return;
+  if(S.mode==='cards'&&FC.deck.length&&FC.i<FC.deck.length){
+    if(e.key===' '){e.preventDefault();document.getElementById('fcCard').click()}
+    else if(e.key==='ArrowRight')document.getElementById('fcGot').click();
+    else if(e.key==='ArrowLeft')document.getElementById('fcAgain').click();
+  }
+  if(S.mode==='quiz'){
+    const n=+e.key;if(n>=1&&n<=4){const b=document.querySelectorAll('.opt')[n-1];if(b)b.click()}
+    else if(e.key==='Enter'&&QZ.done){document.getElementById('qzNext').click()}
+  }
+});
+const h=(location.hash||'').slice(1);if(['list','cards','quiz','diagram'].includes(h))S.mode=h;
+if(S.mode==='cards')buildDeck();
+document.documentElement.lang='ru';
+renderCats();syncTg();updateProgress();render();
+</script>
+
+</body>
+</html>
